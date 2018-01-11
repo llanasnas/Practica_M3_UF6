@@ -109,5 +109,26 @@ public class Test {
         
     }
     
+    public static void login(){
+        
+        String user,passwd = "";
+        boolean correcto = false;
+        
+        System.out.println("Introduce el correo:");
+        while(!correcto){
+            user = read.next();
+            if (!user.contains("@") || !user.contains(".")) {
+                System.err.println("Introduce un formato de email correcto");
+            }else{
+                correcto = true;
+            }
+        }
+        System.out.println("Introduce la contraseña:");
+        passwd = read.next();
+        
+        
+        
+    }
+    
     
 }
