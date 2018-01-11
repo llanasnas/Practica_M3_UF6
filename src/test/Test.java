@@ -6,8 +6,13 @@
 package test;
 
 import Model.Cliente;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
 
 /**
  *
@@ -167,6 +172,11 @@ public class Test {
         System.out.println("Introduce la contraseña:");
         passwd = read.next();
 
+    }
+    
+        public static boolean userExists(String username){
+        String mailQuery = "SELECT id FROM Cliente WHERE correo = ?";
+        return true;
     }
 
 }
