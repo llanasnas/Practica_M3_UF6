@@ -5,6 +5,7 @@
  */
 package test;
 
+import Model.Cliente;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -66,10 +67,43 @@ public class Test {
     }
     public static void registro(){
         boolean correcto =true;
-        String[] datos = {"Nombre","Apellido","Direccion","Telefono","Correo","Contraseña"};
-        
+        String[] datos = {"Nombre: ","Apellido: ","Direccion: ","Telefono: ","Correo: ","Contraseña: "};        
+        String aux;
+        Cliente c = new Cliente();
         for (String data: datos) {
+            switch(data){
             
+                case "Nombre: ":
+                
+                        System.out.println(datos[0]);
+                        c.setNombre(String.valueOf(read.nextInt())) ;
+                      
+                    break;
+                case "Apellido: ":
+
+                    System.out.println(datos[1]);
+                    c.setApellido(String.valueOf(read.nextInt()));
+                    
+                        break;
+                case "Direccion: ":
+                    
+                    System.out.println(datos[2]);
+                    c.setDireccion(String.valueOf(read.nextInt()));
+                    
+                    break;
+                    
+                case "Telefono: ":
+                    
+                    while(correcto){
+                    
+                        System.out.println(datos[3]);
+                        aux = String.valueOf(read.nextInt());
+                        
+                    }
+                    
+                    
+                    break;                    
+            }
         }
         
         

@@ -12,26 +12,39 @@ package Model;
 public class Cliente {
     
     private int id;
-    private String nombre,apellido,correo,password;
+    private String nombre,apellido,correo,password,direccion;
     private int telefono;
 
-    public Cliente(int id, String nombre, String apellido, String correo, String password, int telefono) {
+    public Cliente(int id, String nombre, String apellido, String correo, String password, String direccion, int telefono) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.password = password;
+        this.direccion = direccion;
         this.telefono = telefono;
     }
-    
-    public Cliente(String nombre, String apellido, String correo, String password, int telefono) {
+
+    public Cliente(String nombre, String apellido, String correo, String password, String direccion, int telefono) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.password = password;
+        this.direccion = direccion;
         this.telefono = telefono;
     }
 
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+    
+    public Cliente() {
+        
+    }    
     public int getId() {
         return id;
     }
