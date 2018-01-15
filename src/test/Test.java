@@ -167,6 +167,13 @@ public class Test {
                 System.err.println("Introduce un formato de email correcto");
             } else {
                 correcto = true;
+                if (userExists(user)) {
+                    //Login
+                    passwd = read.next();
+                }else{
+                    System.err.println("Este usuario no se encuentra registrado");
+                }
+                
             }
         }
         System.out.println("Introduce la contraseña:");
