@@ -9,10 +9,13 @@ import Model.Cliente;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import utilities.ConnectDB;
 
 /**
@@ -43,16 +46,16 @@ public class Test {
             System.out.println("2.Registrarse");
             System.out.println("3.Salir");
             try {
-                opc = Integer.parseInt(read.nextLine());
+                opc = read.nextInt();
 
                 switch (opc) {
 
                     case 1:
-
+                        login();
                         break;
 
                     case 2:
-
+                        registro();
                         break;
 
                     case 3:
@@ -129,10 +132,11 @@ public class Test {
                         if (!aux.contains("@") || !aux.contains(".")) {
                             System.err.println("Introduce un formato de email correcto");
                         } else {
-                            if(!userExists(aux)){
+                            if(userExists(aux)){
                             correcto = true;
+                            c.setCorreo(aux);
                             }else{
-                                System.out.println("Este existe una cuenta con este usuario");
+                                System.out.println("Este correo ya tiene una cuenta registrada");
                             }
                         }
                     }
@@ -149,11 +153,13 @@ public class Test {
                         if (aux.length() < 6) {
                             System.err.println("La contraseña tiene que tener una longitud mínima de 6 carácteres.");
                         } else {
-                            System.out.println("Usuario creado con éxito.");
+                            System.out.println("Usuario creado con éxito.");                            
                             c.setPassword(aux);
+                            nuevoUsuario(c);
+                            correcto=true;
                         }
 
-                    }
+                    }                    
 
                     break;
             }
@@ -162,10 +168,10 @@ public class Test {
     }
 
     public static void login() {
-
+ 
         String user, passwd = "";
         boolean correcto = false;
-
+ 
         System.out.println("Introduce el correo:");
         while (!correcto) {
             user = read.next();
@@ -175,27 +181,77 @@ public class Test {
                 correcto = true;
                 if (userExists(user)) {
                     //Login
+                    System.out.println("Introduce la contraseña:");
                     passwd = read.next();
+                    if (checkUserPasswd(user,passwd) != null) {
+                        Cliente c = checkUserPasswd(user,passwd);
+                        System.out.println("has entrao atontao");
+                    }else{
+                        System.err.println("Password incorrecta, volviendo al menu...");
+                    }
+ 
                 } else {
                     System.err.println("Este usuario no se encuentra registrado");
                 }
-
+ 
             }
         }
-
+ 
     }
 
-    public static boolean userExists(String username) {
+  public static boolean userExists(String username) {
         String mailQuery = "SELECT id FROM Cliente WHERE correo = ?";
-
+        ResultSet rs = null;
+        Cliente c = null;
         try (
-                Connection con = ConnectDB.getInstance();
-                PreparedStatement preparedStatement = con.prepareStatement(mailQuery);) {
+            Connection con = ConnectDB.getInstance();
+            PreparedStatement preparedStatement = con.prepareStatement(mailQuery);) {
             preparedStatement.setString(1, username);
+            rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
         } catch (SQLException e) {
-
+            System.out.println(e.getErrorCode());
+        }finally{
+            try {
+                ConnectDB.closeConnection();
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        return true;
+        return false;
+    }
+  public static Cliente checkUserPasswd(String username, String passwd){
+        String mailQuery = "SELECT * FROM Cliente WHERE correo = ? AND password = ?";
+        ResultSet rs = null;
+        Cliente c = null;
+        try (
+            Connection con = ConnectDB.getInstance();
+            PreparedStatement preparedStatement = con.prepareStatement(mailQuery);) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, passwd);
+            rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                c = new Cliente();
+                c.setId(rs.getInt("id"));
+                c.setNombre(rs.getString("nombre"));
+                c.setApellido(rs.getString("apellido"));
+                c.setDireccion(rs.getString("direccion"));
+                c.setCorreo(rs.getString("correo"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getErrorCode());
+        }finally{
+            try {
+                ConnectDB.closeConnection();
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return c;
     }
 
     public void entradaSistema() {
@@ -205,7 +261,7 @@ public class Test {
     public static void nuevoUsuario(Cliente c) {
 
          String insert = "INSERT INTO `cliente`(`id`, `nombre`, `apellido`, `direccion`, `telefono`, "
-                 + "`correo`, `password`) VALUES (null,?,?,?,?,?,?,?)";
+                 + "`correo`, `password`) VALUES (null,?,?,?,?,?,?)";
 
         try (Connection con = ConnectDB.getInstance();
                 PreparedStatement prepared = con.prepareStatement(insert);) {
@@ -213,11 +269,12 @@ public class Test {
             
             prepared.setString(1, c.getNombre());
             prepared.setString(2, c.getApellido());
-            prepared.setString(3, c.getCorreo());
-            prepared.setString(4, c.getPassword());
-            prepared.setString(5, c.getDireccion());
-            prepared.setString(6, c.getTelefono());
+            prepared.setString(3, c.getDireccion());
+            prepared.setString(4, c.getTelefono());
+            prepared.setString(5, c.getCorreo());
+            prepared.setString(6, c.getPassword());
             
+            prepared.executeUpdate();
              
         } catch (SQLException e) {
             System.out.println("Exception: " + e);
