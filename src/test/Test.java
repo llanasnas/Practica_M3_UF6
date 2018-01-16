@@ -108,7 +108,8 @@ public class Test {
                             System.err.println("Tiene que tener una longitud de 9 carácteres");
                         } else {
                             try {
-                                c.setTelefono(Integer.parseInt(aux));
+                                int numerico = Integer.parseInt(aux);
+                                c.setTelefono(aux);
                                 correcto = true;
                             } catch (NumberFormatException e) {
                                 System.err.println("Tiene que tener formato numérico");
@@ -128,7 +129,11 @@ public class Test {
                         if (!aux.contains("@") || !aux.contains(".")) {
                             System.err.println("Introduce un formato de email correcto");
                         } else {
+                            if(!userExists(aux)){
                             correcto = true;
+                            }else{
+                                System.out.println("Este existe una cuenta con este usuario");
+                            }
                         }
                     }
                     correcto = false;
@@ -194,6 +199,35 @@ public class Test {
     }
 
     public void entradaSistema() {
+
+    }
+
+    public static void nuevoUsuario(Cliente c) {
+
+         String insert = "INSERT INTO `cliente`(`id`, `nombre`, `apellido`, `direccion`, `telefono`, "
+                 + "`correo`, `password`) VALUES (null,?,?,?,?,?,?,?)";
+
+        try (Connection con = ConnectDB.getInstance();
+                PreparedStatement prepared = con.prepareStatement(insert);) {
+            
+            
+            prepared.setString(1, c.getNombre());
+            prepared.setString(2, c.getApellido());
+            prepared.setString(3, c.getCorreo());
+            prepared.setString(4, c.getPassword());
+            prepared.setString(5, c.getDireccion());
+            prepared.setString(6, c.getTelefono());
+            
+             
+        } catch (SQLException e) {
+            System.out.println("Exception: " + e);
+        } finally {
+            try {
+                ConnectDB.closeConnection();
+            } catch (SQLException e) {
+                System.err.println("Exception: " + e);
+            }
+        }
 
     }
 
