@@ -17,7 +17,9 @@ public class ConnectDB {
     
     private static Connection instance;
     
-    private static Connection getInstance() throws SQLException {
+    private ConnectDB(){};
+    
+    public static Connection getInstance() throws SQLException {
     
         if (instance==null) {
             instance = DriverManager.getConnection(MYSQLConnection.URL,MYSQLConnection.USERNAME,MYSQLConnection.PASSWD);

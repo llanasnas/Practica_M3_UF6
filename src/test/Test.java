@@ -9,10 +9,11 @@ import Model.Cliente;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+import utilities.ConnectDB;
 
 /**
  *
@@ -134,21 +135,21 @@ public class Test {
                     break;
 
                 case "Contraseña: ":
-                    
-                   while(!correcto){
-                   
-                       System.out.println("La contraseña tiene que tener una longitud mínima de 6 carácteres.");
-                       System.out.println(datos[5]);
-                       aux = read.nextLine();
-                       if(aux.length()<6){
-                           System.err.println("La contraseña tiene que tener una longitud mínima de 6 carácteres.");
-                       }else{
-                           System.out.println("Usuario creado con éxito.");
-                           c.setPassword(aux);
-                       }
-                       
-                   } 
-                    
+
+                    while (!correcto) {
+
+                        System.out.println("La contraseña tiene que tener una longitud mínima de 6 carácteres.");
+                        System.out.println(datos[5]);
+                        aux = read.nextLine();
+                        if (aux.length() < 6) {
+                            System.err.println("La contraseña tiene que tener una longitud mínima de 6 carácteres.");
+                        } else {
+                            System.out.println("Usuario creado con éxito.");
+                            c.setPassword(aux);
+                        }
+
+                    }
+
                     break;
             }
         }
@@ -170,20 +171,29 @@ public class Test {
                 if (userExists(user)) {
                     //Login
                     passwd = read.next();
-                }else{
+                } else {
                     System.err.println("Este usuario no se encuentra registrado");
                 }
-                
+
             }
         }
-        System.out.println("Introduce la contraseña:");
-        passwd = read.next();
 
     }
-    
-        public static boolean userExists(String username){
+
+    public static boolean userExists(String username) {
         String mailQuery = "SELECT id FROM Cliente WHERE correo = ?";
-        return true;
+        try(
+            Connection con = ConnectDB.getInstance();    
+                ){
+            
+        }catch(SQLException e){
+            
+        };
+    
+    }
+    
+    public void entradaSistema(){
+        
     }
 
 }
