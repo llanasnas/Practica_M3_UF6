@@ -27,7 +27,7 @@ public class ConnectDB {
         return instance;
     }
     
-    public void closeConnection() throws SQLException{
+    public static void closeConnection() throws SQLException{
         if (instance!=null) {
             instance.close();
             instance = null;
