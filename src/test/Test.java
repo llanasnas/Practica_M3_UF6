@@ -182,18 +182,19 @@ public class Test {
 
     public static boolean userExists(String username) {
         String mailQuery = "SELECT id FROM Cliente WHERE correo = ?";
-        try(
-            Connection con = ConnectDB.getInstance();    
-                ){
-            
-        }catch(SQLException e){
-            
-        };
-    
+
+        try (
+                Connection con = ConnectDB.getInstance();
+                PreparedStatement preparedStatement = con.prepareStatement(mailQuery);) {
+            preparedStatement.setString(1, username);
+        } catch (SQLException e) {
+
+        }
+        return true;
     }
-    
-    public void entradaSistema(){
-        
+
+    public void entradaSistema() {
+
     }
 
 }
