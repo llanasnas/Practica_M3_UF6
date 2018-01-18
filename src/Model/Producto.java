@@ -33,6 +33,9 @@ public class Producto {
         this.precio = precio;
     }
 
+    public Producto() {
+    }
+
     public int getId() {
         return id;
     }
@@ -79,6 +82,16 @@ public class Producto {
 
     public void setPrecio(double precio) {
         this.precio = precio;
+    }
+
+
+    public String toStringConCategoria() {
+        return "Producto{" + "id=" + id + ", nombre=" + nombre + ", categoria=" + categoria + ", descripcion=" + descripcion + ", precio=" + precio + '}';
+    }
+    
+    @Override
+    public String toString() {
+        return "Producto{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio + '}';
     }
      
      

@@ -195,9 +195,9 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
             System.out.println(e.getErrorCode());
         } finally {
             try {
-                if(rs!=null){
-                rs.close();
-                }                
+                if (rs != null) {
+                    rs.close();
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -225,11 +225,46 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
         } catch (SQLException e) {
             System.out.println("Exception: " + e);
         } finally {
-            try {
-                ConnectDB.closeConnection();
-            } catch (SQLException e) {
-                System.err.println("Exception: " + e);
+            
+        }
+    }
+    
+    @Override
+    public void cargarCredito(Connection con, String email){
+        
+        boolean correcto = false;
+        String creditCard="";
+        int dinero = 0;
+        while(!correcto){
+            System.out.println("Introduzca el numero de la tarjeta porfavor:");
+            creditCard = read.next();
+            if (creditCard.isEmpty()) {
+                System.err.println("Nada no es una tarjeta!");
+            }else{
+                correcto = true;
             }
+        }
+        correcto = false;
+        
+        while(!correcto){
+            System.out.println("Introduce la cantidad a cargar:");
+            dinero = read.nextInt();
+            if (dinero < 1) {
+                System.err.println("La cantidad minima es 1€");
+            }else{
+                correcto = true;
+            }
+        }
+        
+        String update = "UPDATE cliente SET saldo = ? WHERE correo = ?;";
+        try (PreparedStatement preparedStatement = con.prepareStatement(update);) {
+
+            preparedStatement.setInt(1, dinero);
+            preparedStatement.setString(2, email);
+            preparedStatement.executeUpdate();
+            System.out.println("¡Cantidad cargada correctamente!");
+        } catch (SQLException e) {
+            System.out.println(e);
         }
     }
 
@@ -248,10 +283,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
             }
         }
         correcto = false;
-        System.out.println("La contraseña tiene que tener una longitud mínima de 6 carácteres.");
         while (!correcto) {
-            System.out.println(" ");
-
             System.out.println("Nueva Contraseña: ");
             pass = read.next();
             if (pass.length() < 6) {
@@ -267,7 +299,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
             preparedStatement.setString(1, pass);
             preparedStatement.setString(2, email);
             preparedStatement.executeUpdate();
-
+            System.out.println("¡Contraseña actualizada correctamente!");
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -276,8 +308,6 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
 
     public boolean correctPasswd(Connection con, String usuario, String passwd) {
         String mailQuery = "SELECT * FROM Cliente WHERE correo = ? AND password = ?";
-
-        Cliente c = null;
         try (
                 PreparedStatement preparedStatement = con.prepareStatement(mailQuery);) {
             preparedStatement.setString(1, usuario);
@@ -297,32 +327,35 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
     }
 
     public void borrarCuenta(Connection con, Cliente c) {
+        String pass = "";
 
-        System.out.println("Introduce tu contraseña para poder eliminar la cuenta: ");
+        System.err.println("¡ATENCION! Esta accion es irreversible, ¿Estas seguro? (SI/NO)");
+        if (read.next().toLowerCase().equals("si")) {
+            System.out.println("Introduce tu contraseña para poder eliminar la cuenta: ");
+            pass = read.next();
 
-        String pass = read.next();
+            if (correctPasswd(con, c.getCorreo(), pass)) {
 
-        if (correctPasswd(con, c.getCorreo(), pass)) {
+                String delete = "DELETE FROM cliente WHERE correo = '" + c.getCorreo() + "'";
 
-            String delete = "DELETE FROM cliente WHERE correo = '" + c.getCorreo() + "'";
+                try (Statement stm = con.createStatement()) {
 
-            try (Statement stm = con.createStatement()) {
-                
-                stm.execute(delete);
+                    stm.execute(delete);
 
-            } catch (SQLException e) {
+                } catch (SQLException e) {
 
-                System.out.println(e);
+                    System.out.println(e);
+                }
+
+            } else {
+
+                System.err.println("Contraseña incorecta, volviendo al menú...");
+
             }
-
         }else{
-        
-            System.err.println("Contraseña incorecta, volviendo al menú...");
-            
+            System.out.println("Operacion cancelada, gracias por seguir con nosotros <3");
         }
 
     }
-
-    
 
 }

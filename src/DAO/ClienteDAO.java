@@ -18,6 +18,7 @@ public interface ClienteDAO {
     public void registro(Connection con);
     public Cliente login(Connection con);
     public boolean userExists(Connection con, String username);
+    public void cargarCredito(Connection con, String email);
     public void nuevoUsuario(Connection con,Cliente c);
     public void cambiarContrasenya(Connection con,String email);
     public void borrarCuenta(Connection con,Cliente c);

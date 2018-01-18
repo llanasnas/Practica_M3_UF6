@@ -189,7 +189,7 @@ public class Test {
         
         int opc = 0;
         Connection con = null;
-        while (opc != 3) {
+        while (opc != 4) {
 
             try {
                 con = ConnectDB.getInstance();
@@ -197,8 +197,10 @@ public class Test {
                 System.out.println("1. Mostrar todos los productos");
 
                 System.out.println("2. Mostrar productos por categorias");
+                
+                System.out.println("3. Comprar un producto");
 
-                System.out.println("3. Atras");
+                System.out.println("4. Atras");
 
                 opc = read.nextInt();
 
