@@ -7,6 +7,8 @@ package test;
 
 import DAO.ClienteDAO;
 import DAO.ClienteDAOFactory;
+import DAO.ProductoDAO;
+import DAO.ProductoDAOFactory;
 import Model.Cliente;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,8 +32,11 @@ public class Test {
      * @param args the command line arguments
      */
     public static Scanner read = new Scanner(System.in);
-    public static ClienteDAOFactory factory = new ClienteDAOFactory();
-    public static ClienteDAO dao = factory.createClienteDAO();
+    public static ClienteDAOFactory factoryCliente = new ClienteDAOFactory();
+    public static ClienteDAO daoCliente = factoryCliente.createClienteDAO();
+    
+    public static ProductoDAOFactory factoryProducto = new ProductoDAOFactory();
+    public static ProductoDAO daoProducto = factoryProducto.createProductoDAO();
 
     public static void main(String[] args) {
         // TODO code application logic here
@@ -60,14 +65,14 @@ public class Test {
                 switch (opc) {
 
                     case 1:
-                        if ((c = dao.login(con)) != null) {
+                        if ((c = daoCliente.login(con)) != null) {
                             mostrarMenuUsuari(c);
                         }
 
                         break;
 
                     case 2:
-                        dao.registro(con);
+                        daoCliente.registro(con);
                         break;
 
                     case 3:
@@ -75,7 +80,7 @@ public class Test {
                         break;
 
                     default:
-                        System.out.println("opcio incorrecte");
+                        System.out.println("Opcion incorrecta");
                         break;
 
                 }
@@ -108,48 +113,110 @@ public class Test {
             try {
                 con = ConnectDB.getInstance();
 
-                System.out.println("1.Ver lista de productos: ");
+                System.out.println("1.Ver lista de productos");
 
                 System.out.println("2.Historial de compras");
 
-                System.out.println("3.Configuración de usuario");
+                System.out.println("3.Cargar credito en la cuenta");
+                
+                System.out.println("4.Configuración de usuario");
 
-                System.out.println("4.Cerrar sesión");
+                System.out.println("5.Cerrar sesión");
 
                 opc = read.nextInt();
 
                 switch (opc) {
 
                     case 1:
-
+                        menuProductos(c);
                         break;
 
                     case 2:
-                        dao.borrarCuenta(con, c);
+
                         break;
 
                     case 3:
-                        dao.cambiarContrasenya(con, c.getCorreo());
+                        daoCliente.cargarCredito(con, c.getCorreo());
                         break;
 
                     case 4:
-
+                        configUser(c);
                         break;
 
-                }
-            } catch (SQLException e) {
-                System.out.println(e);
-            }finally {
-
-            try {
-                if (con != null) {
-                    con.close();
                 }
             } catch (SQLException e) {
                 System.out.println(e);
             }
-
         }
+    }
+
+    public static void configUser(Cliente c) {
+            
+        int opc = 0;
+        Connection con = null;
+        while (opc != 3) {
+
+            try {
+                con = ConnectDB.getInstance();
+
+                System.out.println("1.Cambiar contraseña ");
+
+                System.out.println("2.Eliminar cuenta");
+
+                System.out.println("3. Atras");
+
+                opc = read.nextInt();
+
+                switch (opc) {
+
+                    case 1:
+                        daoCliente.cambiarContrasenya(con, c.getCorreo());
+                        break;
+
+                    case 2:
+                        daoCliente.borrarCuenta(con, c);
+                        break;
+
+
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        }
+    }
+    
+    public static void menuProductos(Cliente c){
+        
+        int opc = 0;
+        Connection con = null;
+        while (opc != 3) {
+
+            try {
+                con = ConnectDB.getInstance();
+
+                System.out.println("1. Mostrar todos los productos");
+
+                System.out.println("2. Mostrar productos por categorias");
+
+                System.out.println("3. Atras");
+
+                opc = read.nextInt();
+
+                switch (opc) {
+
+                    case 1:
+                        daoProducto.listarProductos(con);
+                        break;
+
+                    case 2:
+                        daoProducto.listarProductosPorCategoria(con);
+                        break;
+
+
+                }
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
         }
     }
 
