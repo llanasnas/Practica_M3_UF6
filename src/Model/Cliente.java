@@ -14,6 +14,7 @@ public class Cliente {
     private int id;
     private String nombre,apellido,correo,password,direccion;
     private String telefono;
+    private double saldo;
 
     public Cliente(int id, String nombre, String apellido, String correo, String password, String direccion, String telefono) {
         this.id = id;
@@ -23,6 +24,7 @@ public class Cliente {
         this.password = password;
         this.direccion = direccion;
         this.telefono = telefono;
+        this.saldo=0;
     }
 
     public Cliente(String nombre, String apellido, String correo, String password, String direccion, String telefono) {
@@ -32,18 +34,27 @@ public class Cliente {
         this.password = password;
         this.direccion = direccion;
         this.telefono = telefono;
+        this.saldo=0;
     }
 
     public String getDireccion() {
         return direccion;
     }
 
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }    
+
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
     
     public Cliente() {
-        
+        this.saldo=0;
     }    
     public int getId() {
         return id;

@@ -6,10 +6,12 @@
 package DAO;
 
 import Model.Cliente;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import test.Test;
@@ -25,7 +27,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
     @Override
     public Cliente checkUserPassword(Connection con, String username, String passwd) {
         String mailQuery = "SELECT * FROM Cliente WHERE correo = ? AND password = ?";
-        
+
         Cliente c = null;
         try (
                 PreparedStatement preparedStatement = con.prepareStatement(mailQuery);) {
@@ -45,7 +47,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
 
             e.printStackTrace();
         } finally {
-            
+
         }
         return c;
 
@@ -110,10 +112,10 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
                         if (!aux.contains("@") || !aux.contains(".")) {
                             System.err.println("Introduce un formato de email correcto");
                         } else {
-                            if(!userExists(con,aux)){
-                            correcto = true;
-                            c.setCorreo(aux);
-                            }else{
+                            if (!userExists(con, aux)) {
+                                correcto = true;
+                                c.setCorreo(aux);
+                            } else {
                                 System.out.println("Este correo ya tiene una cuenta registrada");
                             }
                         }
@@ -131,20 +133,19 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
                         if (aux.length() < 6) {
                             System.err.println("La contraseña tiene que tener una longitud mínima de 6 carácteres.");
                         } else {
-                            System.out.println("Usuario creado con éxito.");                            
+                            System.out.println("Usuario creado con éxito.");
                             c.setPassword(aux);
-                            nuevoUsuario(con,c);
-                            correcto=true;
+                            nuevoUsuario(con, c);
+                            correcto = true;
                         }
 
-                    }                    
+                    }
 
                     break;
             }
         }
 
     }
-    
 
     @Override
     public Cliente login(Connection con) {
@@ -162,8 +163,8 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
                     //Login
                     System.out.println("Introduce la contraseña:");
                     passwd = read.next();
-                    if (checkUserPassword(con,user, passwd) != null) {
-                        Cliente c = checkUserPassword(con,user, passwd);
+                    if (checkUserPassword(con, user, passwd) != null) {
+                        Cliente c = checkUserPassword(con, user, passwd);
                         System.out.println("has entrao atontao");
                         return c;
                     } else {
@@ -194,8 +195,9 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
             System.out.println(e.getErrorCode());
         } finally {
             try {
-                
+                if(rs!=null){
                 rs.close();
+                }                
             } catch (SQLException ex) {
                 Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -206,7 +208,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
     @Override
     public void nuevoUsuario(Connection con, Cliente c) {
         String insert = "INSERT INTO `cliente`(`id`, `nombre`, `apellido`, `direccion`, `telefono`, "
-                + "`correo`, `password`) VALUES (null,?,?,?,?,?,?)";
+                + "`correo`, `password`,`saldo`) VALUES (null,?,?,?,?,?,?,0)";
 
         try (
                 PreparedStatement prepared = con.prepareStatement(insert);) {
@@ -230,5 +232,97 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
             }
         }
     }
+
+    public void cambiarContrasenya(Connection con, String email) {
+
+        boolean correcto = false;
+        String pass = "";
+
+        while (!correcto) {
+            System.out.println("Introduce tu contraseña actual");
+            pass = read.next();
+            if (correctPasswd(con, email, pass)) {
+                correcto = true;
+            } else {
+                System.err.println("Password incorrecto..");
+            }
+        }
+        correcto = false;
+        System.out.println("La contraseña tiene que tener una longitud mínima de 6 carácteres.");
+        while (!correcto) {
+            System.out.println(" ");
+
+            System.out.println("Nueva Contraseña: ");
+            pass = read.next();
+            if (pass.length() < 6) {
+                System.err.println("La contraseña tiene que tener una longitud mínima de 6 carácteres");
+            } else {
+                correcto = true;
+            }
+
+        }
+        String update = "UPDATE cliente SET password = ? WHERE correo = ?;";
+        try (PreparedStatement preparedStatement = con.prepareStatement(update);) {
+
+            preparedStatement.setString(1, pass);
+            preparedStatement.setString(2, email);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+    }
+
+    public boolean correctPasswd(Connection con, String usuario, String passwd) {
+        String mailQuery = "SELECT * FROM Cliente WHERE correo = ? AND password = ?";
+
+        Cliente c = null;
+        try (
+                PreparedStatement preparedStatement = con.prepareStatement(mailQuery);) {
+            preparedStatement.setString(1, usuario);
+            preparedStatement.setString(2, passwd);
+            ResultSet rs;
+            rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+        return false;
+
+    }
+
+    public void borrarCuenta(Connection con, Cliente c) {
+
+        System.out.println("Introduce tu contraseña para poder eliminar la cuenta: ");
+
+        String pass = read.next();
+
+        if (correctPasswd(con, c.getCorreo(), pass)) {
+
+            String delete = "DELETE FROM cliente WHERE correo = '" + c.getCorreo() + "'";
+
+            try (Statement stm = con.createStatement()) {
+                
+                stm.execute(delete);
+
+            } catch (SQLException e) {
+
+                System.out.println(e);
+            }
+
+        }else{
+        
+            System.err.println("Contraseña incorecta, volviendo al menú...");
+            
+        }
+
+    }
+
+    
 
 }
