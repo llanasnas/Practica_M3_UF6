@@ -30,6 +30,9 @@ public class Factura {
         this.precio_total = precio_total;
     }
 
+    public Factura() {
+    }
+
     public int getId() {
         return id;
     }

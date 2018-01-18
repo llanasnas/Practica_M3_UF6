@@ -9,12 +9,6 @@ package DAO;
  *
  * @author Alumne
  */
-public interface CompraDAO {
-    
-    
+public interface CompraDAO {  
     public void realizarCompra();
-    public void facturarCompra(); 
-    
-    
-    
 }
