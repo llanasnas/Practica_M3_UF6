@@ -7,6 +7,8 @@ package test;
 
 import DAO.ClienteDAO;
 import DAO.ClienteDAOFactory;
+import DAO.FacturaDAO;
+import DAO.FacturaDAOFactory;
 import DAO.ProductoDAO;
 import DAO.ProductoDAOFactory;
 import Model.Cliente;
@@ -37,6 +39,9 @@ public class Test {
     
     public static ProductoDAOFactory factoryProducto = new ProductoDAOFactory();
     public static ProductoDAO daoProducto = factoryProducto.createProductoDAO();
+    
+    public static FacturaDAOFactory factoryFactura = new FacturaDAOFactory();
+    public static FacturaDAO facturaDAO = factoryFactura.createFacturaDAO();
 
     public static void main(String[] args) {
         // TODO code application logic here
@@ -132,7 +137,7 @@ public class Test {
                         break;
 
                     case 2:
-
+                        facturaDAO.consultarFacturas(con);
                         break;
 
                     case 3:
@@ -176,11 +181,18 @@ public class Test {
                     case 2:
                         daoCliente.borrarCuenta(con, c);
                         break;
-
-
+                    case 3:
+                        System.out.println("");
+                        break;
+                    default: 
+                        System.out.println("Entra un valor válido");
+                        break;
                 }
-            } catch (SQLException e) {
-                System.out.println(e);
+            }catch(NumberFormatException e){
+                System.err.println("Se esperaba un numero");
+            }
+            catch (SQLException e) {
+                System.err.println(e);
             }
         }
     }
@@ -213,13 +225,30 @@ public class Test {
                     case 2:
                         daoProducto.listarProductosPorCategoria(con);
                         break;
+                        
+                    case 3:
+                        daoProducto.listarProductos(con);
+                        System.out.println("Introduce el id del producto:");
+                        int aux = read.nextInt();
+                        if(daoProducto.existeProducto(con,aux)){
+                            
+                        }else{
+                            System.out.println("No existe el producto con ese id");
+                        }
+                        break;
 
 
                 }
-            } catch (SQLException e) {
+            }catch(NumberFormatException e){
+                System.err.println("Se esperaba un numero");
+            }
+            catch (SQLException e) {
                 System.out.println(e);
             }
         }
     }
+    
+    
+    
 
 }

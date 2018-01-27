@@ -48,6 +48,23 @@ public class Factura {
     public double getPrecio_total() {
         return precio_total;
     }
+
+    public void setId_compra(int id_compra) {
+        this.id_compra = id_compra;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public void setPrecio_total(double precio_total) {
+        this.precio_total = precio_total;
+    }
+
+    @Override
+    public String toString() {
+        return "Factura{" + "id_compra=" + id_compra + ", fecha=" + fecha + ", precio_total=" + precio_total + '}';
+    }
     
     
 }

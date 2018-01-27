@@ -132,4 +132,38 @@ public class ProductoDAOJDBCImpl implements ProductoDAO {
         return false;
     }
 
+    public boolean existeProducto(Connection con,int aux) {
+
+        String query = "SELECT id FROM producto ";
+        ResultSet rs = null;        
+        Producto p = new Producto();
+        try (
+                
+                Statement stmt = con.createStatement();) {
+
+           
+            rs = stmt.executeQuery(query);
+            if (rs.next()) {
+                p.setId(rs.getInt("id"));
+                if(aux==p.getId()){
+                    return true;
+                }    
+            }
+            
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductoDAOFactory.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+
+    }
+
 }

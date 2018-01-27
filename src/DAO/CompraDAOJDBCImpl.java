@@ -5,19 +5,29 @@
  */
 package DAO;
 
-
-
-import Model.Cliente;
-import Model.Compra;
+import Model.Producto;
 import java.sql.Connection;
+
 /**
  *
  * @author Gerard
  */
-public interface FacturaDAO {
+public class CompraDAOJDBCImpl implements CompraDAO{
+
+    @Override
+    public void realizarCompra(Connection con) {
+        
+        
+        
+        
+    }
+
+    @Override
+    public void cambiarStock(Connection con) {
+        
+    }
     
-    public void consultarFacturas(Connection con);
-    public void facturar(Connection con, Compra c);
+    
     
     
 }

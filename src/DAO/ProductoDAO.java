@@ -17,5 +17,6 @@ public interface ProductoDAO {
     public void listarProductos(Connection con);
     public void listarProductosPorCategoria(Connection con);
     public boolean existeCategoria(Connection con, String categoria);
+    public boolean existeProducto(Connection con,int aux);
     
 }

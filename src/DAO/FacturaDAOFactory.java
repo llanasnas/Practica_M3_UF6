@@ -5,19 +5,15 @@
  */
 package DAO;
 
-
-
-import Model.Cliente;
-import Model.Compra;
-import java.sql.Connection;
 /**
  *
  * @author Gerard
  */
-public interface FacturaDAO {
+public class FacturaDAOFactory {
     
-    public void consultarFacturas(Connection con);
-    public void facturar(Connection con, Compra c);
+    public FacturaDAO createFacturaDAO(){
     
+        return new FacturaDAOJDBCImpl() {};
+    }
     
 }

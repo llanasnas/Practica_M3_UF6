@@ -5,10 +5,16 @@
  */
 package DAO;
 
+import Model.Producto;
+import java.sql.Connection;
+
 /**
  *
  * @author Alumne
  */
 public interface CompraDAO {  
-    public void realizarCompra();
+    
+    public void realizarCompra(Connection con);    
+    public void cambiarStock(Connection con);
+    
 }

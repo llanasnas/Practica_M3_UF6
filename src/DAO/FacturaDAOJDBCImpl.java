@@ -22,17 +22,23 @@ import java.util.logging.Logger;
 public class FacturaDAOJDBCImpl implements FacturaDAO{
 
     @Override
-    public void consultarFacturas(Connection con, Cliente c) {        
+    public void consultarFacturas(Connection con) {        
         
         String query = "SELECT * FROM factura AS f, cliente AS c, compra AS co WHERE c.id=co.id_cliente AND co.id=f.id_compra";
+        
+        //valors a la bd : id	id_compra	fecha	precio_total
         
         try(Statement stm = con.createStatement()){
         
             
             ResultSet rs = stm.executeQuery(query);
             Factura factura = new Factura();
+            
             while(rs.next()){
-                System.out.println("");                
+                factura.setFecha(rs.getDate("fecha"));
+                factura.setId_compra(rs.getInt("id_compra"));
+                factura.setPrecio_total(rs.getDouble("precio_total"));
+                factura.toString();
             }
             
         } catch (SQLException ex) {
