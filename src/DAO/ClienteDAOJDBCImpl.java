@@ -165,7 +165,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
                     passwd = read.next();
                     if (checkUserPassword(con, user, passwd) != null) {
                         Cliente c = checkUserPassword(con, user, passwd);
-                        System.out.println("has entrao atontao");
+                        
                         return c;
                     } else {
                         System.err.println("Password incorrecta, volviendo al menu...");

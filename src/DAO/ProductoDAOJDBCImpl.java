@@ -136,16 +136,15 @@ public class ProductoDAOJDBCImpl implements ProductoDAO {
 
         String query = "SELECT id FROM producto ";
         ResultSet rs = null;        
-        Producto p = new Producto();
-        try (
-                
+        int id;
+        try (               
                 Statement stmt = con.createStatement();) {
 
            
             rs = stmt.executeQuery(query);
             if (rs.next()) {
-                p.setId(rs.getInt("id"));
-                if(aux==p.getId()){
+                id = rs.getInt("id");
+                if(aux==id){
                     return true;
                 }    
             }

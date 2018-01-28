@@ -7,6 +7,8 @@ package test;
 
 import DAO.ClienteDAO;
 import DAO.ClienteDAOFactory;
+import DAO.CompraDAO;
+import DAO.CompraDAOFactory;
 import DAO.FacturaDAO;
 import DAO.FacturaDAOFactory;
 import DAO.ProductoDAO;
@@ -42,6 +44,9 @@ public class Test {
     
     public static FacturaDAOFactory factoryFactura = new FacturaDAOFactory();
     public static FacturaDAO facturaDAO = factoryFactura.createFacturaDAO();
+    
+    public static CompraDAOFactory factoryCompra = new CompraDAOFactory();
+    public static CompraDAO daoCompra = factoryCompra.crearCompra();
 
     public static void main(String[] args) {
         // TODO code application logic here
@@ -231,7 +236,7 @@ public class Test {
                         System.out.println("Introduce el id del producto:");
                         int aux = read.nextInt();
                         if(daoProducto.existeProducto(con,aux)){
-                            
+                            daoCompra.realizarCompra(con, aux, c);
                         }else{
                             System.out.println("No existe el producto con ese id");
                         }
