@@ -19,7 +19,7 @@ import static test.Test.read;
 
 /**
  *
- * @author Albert
+ * @author Gerard
  */
 public class ProductoDAOJDBCImpl implements ProductoDAO {
 
@@ -134,19 +134,18 @@ public class ProductoDAOJDBCImpl implements ProductoDAO {
 
     public boolean existeProducto(Connection con,int aux) {
 
-        String query = "SELECT id FROM producto ";
+        String query = "SELECT id FROM producto WHERE id=? ";
         ResultSet rs = null;        
         int id;
         try (               
-                Statement stmt = con.createStatement();) {
+                PreparedStatement stmt = con.prepareStatement(query);) {
 
-           
+           stmt.setInt(1, aux);
             rs = stmt.executeQuery(query);
             if (rs.next()) {
-                id = rs.getInt("id");
-                if(aux==id){
-                    return true;
-                }    
+                return true; 
+            }else{
+                return false;
             }
             
 
