@@ -39,13 +39,13 @@ public class Test {
     public static Scanner read = new Scanner(System.in);
     public static ClienteDAOFactory factoryCliente = new ClienteDAOFactory();
     public static ClienteDAO daoCliente = factoryCliente.createClienteDAO();
-    
+
     public static ProductoDAOFactory factoryProducto = new ProductoDAOFactory();
     public static ProductoDAO daoProducto = factoryProducto.createProductoDAO();
-    
+
     public static FacturaDAOFactory factoryFactura = new FacturaDAOFactory();
     public static FacturaDAO facturaDAO = factoryFactura.createFacturaDAO();
-    
+
     public static CompraDAOFactory factoryCompra = new CompraDAOFactory();
     public static CompraDAO daoCompra = factoryCompra.crearCompra();
 
@@ -62,10 +62,11 @@ public class Test {
         int opc = 0;
         Connection con = null;
         System.out.println("Bienvenido a Avalon (La competencia de Amazon)");
-        try {
-            con = ConnectDB.getInstance();
-            do {
 
+        try {
+        do {
+            
+                con = ConnectDB.getInstance();
                 System.out.println("_________MENÚ_________");
                 System.out.println("1.Iniciar sesión");
                 System.out.println("2.Registrarse");
@@ -95,22 +96,25 @@ public class Test {
                         break;
 
                 }
-            } while (opc != 3);
-        } catch (InputMismatchException e) {
-            System.err.println("Introduce una opción válida");
-        } catch (SQLException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+                } while (opc != 3);
 
-            try {
-                if (con != null) {
-                    con.close();
+            } catch (InputMismatchException e) {
+                System.err.println("Introduce una opción válida");
+                read.next();
+            } catch (SQLException ex) {
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+
+                try {
+                    if (con != null) {
+                        con.close();
+                    }
+                } catch (SQLException e) {
+                    System.out.println(e);
                 }
-            } catch (SQLException e) {
-                System.out.println(e);
-            }
 
-        }
+            }
+        
 
     }
 
@@ -129,7 +133,7 @@ public class Test {
                 System.out.println("2.Historial de compras");
 
                 System.out.println("3.Cargar credito en la cuenta");
-                
+
                 System.out.println("4.Configuración de usuario");
 
                 System.out.println("5.Cerrar sesión");
@@ -143,11 +147,11 @@ public class Test {
                         break;
 
                     case 2:
-                        facturaDAO.consultarFacturas(con);
+                        facturaDAO.consultarFacturas(con,c);
                         break;
 
                     case 3:
-                        c.setSaldo(c.getSaldo()+daoCliente.cargarCredito(con, c.getCorreo()));
+                        c.setSaldo(c.getSaldo() + daoCliente.cargarCredito(con, c.getCorreo()));
                         break;
 
                     case 4:
@@ -155,6 +159,11 @@ public class Test {
                         break;
 
                 }
+            } catch (InputMismatchException e) {
+                System.err.println("Introduce una opción válida");
+                read.next();
+            } catch (NumberFormatException e) {
+                System.err.println("Entra un valor válido");
             } catch (SQLException e) {
                 System.out.println(e);
             }
@@ -162,7 +171,7 @@ public class Test {
     }
 
     public static void configUser(Cliente c) {
-            
+
         int opc = 0;
         Connection con = null;
         while (opc != 3) {
@@ -190,21 +199,23 @@ public class Test {
                     case 3:
                         System.out.println("");
                         break;
-                    default: 
+                    default:
                         System.out.println("Entra un valor válido");
                         break;
                 }
-            }catch(NumberFormatException e){
+            } catch (InputMismatchException e) {
+                System.err.println("Introduce una opción válida");
+                read.next();
+            } catch (NumberFormatException e) {
                 System.err.println("Se esperaba un numero");
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
             }
         }
     }
-    
-    public static void menuProductos(Cliente c){
-        
+
+    public static void menuProductos(Cliente c) {
+
         int opc = 0;
         Connection con = null;
         while (opc != 4) {
@@ -215,7 +226,7 @@ public class Test {
                 System.out.println("1. Mostrar todos los productos");
 
                 System.out.println("2. Mostrar productos por categorias");
-                
+
                 System.out.println("3. Comprar un producto");
 
                 System.out.println("4. Atras");
@@ -231,35 +242,31 @@ public class Test {
                     case 2:
                         daoProducto.listarProductosPorCategoria(con);
                         break;
-                        
+
                     case 3:
                         daoProducto.listarProductos(con);
                         System.out.println("Introduce el id del producto:");
                         int aux = read.nextInt();
-                        if(daoProducto.existeProducto(con,aux)){
+                        if (daoProducto.existeProducto(con, aux)) {
                             Compra compra = daoCompra.realizarCompra(con, aux, c);
-                            if(compra!=null){
+                            if (compra != null) {
                                 facturaDAO.facturar(con, compra);
-                            }else{
-                                System.out.println("null");
-                            }                            
-                        }else{
+                            }
+                        } else {
                             System.out.println("No existe el producto con ese id");
                         }
                         break;
 
-
                 }
-            }catch(NumberFormatException e){
+            } catch (InputMismatchException e) {
+                System.err.println("Introduce una opción válida");
+                read.next();
+            } catch (NumberFormatException e) {
                 System.err.println("Se esperaba un numero");
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 System.out.println(e);
             }
         }
     }
-    
-    
-    
 
 }

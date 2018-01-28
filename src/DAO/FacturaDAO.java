@@ -16,7 +16,7 @@ import java.sql.Connection;
  */
 public interface FacturaDAO {
     
-    public void consultarFacturas(Connection con);
+    public void consultarFacturas(Connection con, Cliente c);
     public void facturar(Connection con, Compra c);
     
     

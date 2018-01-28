@@ -192,8 +192,8 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
             if (rs.next()) {
                 return true;
             }
-        } catch (SQLException e) {
-            System.out.println(e.getErrorCode());
+        } catch (SQLException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 if (rs != null) {

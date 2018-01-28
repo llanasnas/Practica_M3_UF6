@@ -26,16 +26,24 @@ import test.Test;
 public class FacturaDAOJDBCImpl implements FacturaDAO{
 
     @Override
-    public void consultarFacturas(Connection con) {        
+    public void consultarFacturas(Connection con, Cliente c) {        
         
-        String query = "SELECT * FROM factura AS f, cliente AS c, compra AS co WHERE c.id=co.id_cliente AND co.id=f.id_compra";
-        
+        String query = "SELECT * FROM factura AS f, compra AS co WHERE co.id_cliente=? AND co.id=f.id_compra";
+        String query2 = "SELECT id FROM cliente WHERE correo = ?";
+        ResultSet rs = null;
         //valors a la bd : id	id_compra	fecha	precio_total
         
-        try(Statement stm = con.createStatement()){
+        try(PreparedStatement stm = con.prepareStatement(query);
+                PreparedStatement stm2 = con.prepareStatement(query2)
+                ){
         
+            stm2.setString(1, c.getCorreo());
+            rs = stm2.executeQuery();
+            if(rs.next()){
+                stm.setInt(1,rs.getInt("id"));
+            }
             
-            ResultSet rs = stm.executeQuery(query);
+            rs = stm.executeQuery();
             Factura factura = new Factura();
             
             while(rs.next()){
@@ -47,6 +55,14 @@ public class FacturaDAOJDBCImpl implements FacturaDAO{
             
         } catch (SQLException ex) {
             Logger.getLogger(FacturaDAOJDBCImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
     }
