@@ -6,6 +6,7 @@
 package DAO;
 
 import Model.Cliente;
+import Model.Compra;
 import Model.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,7 +25,7 @@ import static test.Test.read;
 public class CompraDAOJDBCImpl implements CompraDAO{
 
     @Override
-    public void realizarCompra(Connection con,int id,Cliente c) {
+    public Compra realizarCompra(Connection con,int id,Cliente c) {
         
         System.out.println("Introduce la cantidad deseada:");
         int cantidad = read.nextInt();   
@@ -44,14 +45,21 @@ public class CompraDAOJDBCImpl implements CompraDAO{
            
             stmt.setString(1, c.getCorreo());
             rs = stmt.executeQuery();
+            
             if(rs.next()){
             stmt2.setInt(1, rs.getInt("id"));
-            stmt2.setInt(1, id);
+            stmt2.setInt(2, id);
             stmt2.setInt(3, cantidad);
             stmt2.executeUpdate();
-            cambiarStock(con,rs.getInt("id"),cantidad);
+            cambiarStock(con,id,cantidad);
+            Compra compra= new Compra(rs.getInt("id"),id,cantidad);
             stmt3.setDouble(1,precioCompra);
             stmt3.setInt(2, rs.getInt("id"));
+            stmt3.executeUpdate();
+            
+                System.out.println("Compra completada satisfactoriamente!");
+                System.out.println("");
+                return compra;
             }
 
         } catch (SQLException ex) {
@@ -68,6 +76,7 @@ public class CompraDAOJDBCImpl implements CompraDAO{
         
         
         }
+        return null;
     }
 
     @Override
@@ -92,16 +101,17 @@ public class CompraDAOJDBCImpl implements CompraDAO{
 
     @Override
     public double precioProducto(Connection con, int id) {
-         ResultSet rs = null;
+        ResultSet rs = null;
         String query = "SELECT precio FROM producto WHERE id=?";
         
         try (
                 PreparedStatement stmt = con.prepareStatement(query);) {
             
             stmt.setInt(1, id);
-            rs = stmt.executeQuery(query);
+            rs = stmt.executeQuery();
+            if(rs.next()){
             return rs.getDouble("precio");
-            
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(ProductoDAOFactory.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,9 +124,6 @@ public class CompraDAOJDBCImpl implements CompraDAO{
                 Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        
-        
         return 0;
     }
     

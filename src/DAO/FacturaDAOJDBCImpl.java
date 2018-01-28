@@ -9,11 +9,15 @@ import Model.Cliente;
 import Model.Compra;
 import Model.Factura;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import test.Test;
 
 /**
  *
@@ -38,7 +42,7 @@ public class FacturaDAOJDBCImpl implements FacturaDAO{
                 factura.setFecha(rs.getDate("fecha"));
                 factura.setId_compra(rs.getInt("id_compra"));
                 factura.setPrecio_total(rs.getDouble("precio_total"));
-                factura.toString();
+                System.out.println(factura.toString());
             }
             
         } catch (SQLException ex) {
@@ -48,7 +52,47 @@ public class FacturaDAOJDBCImpl implements FacturaDAO{
     }
     @Override
     public void facturar(Connection con, Compra c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     
+        String insert = "INSERT INTO `factura`(`id`, `id_compra`, `fecha`, `precio_total`) VALUES (null,?,?,?)";
+        String query = "SELECT MAX(id) AS id FROM compra WHERE id_cliente=?";
+        String queryPrice = "SELECT precio FROM producto WHERE id = ?";
+        ResultSet rs = null;        
+        int id;
+        try (               PreparedStatement stmt = con.prepareStatement(query);
+                PreparedStatement stmt2 = con.prepareStatement(insert);
+                PreparedStatement stmt3 = con.prepareStatement(queryPrice);) {
+            stmt.setInt(1, c.getId_cliente());
+            rs = stmt.executeQuery();
+           if(rs.next()){
+               stmt2.setInt(1, rs.getInt("id"));  
+           }
+           stmt3.setInt(1, c.getId_producto());
+           java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+           stmt2.setDate(2, date);           
+           rs= stmt3.executeQuery();
+           if(rs.next()){
+               stmt2.setDouble(3, (rs.getDouble("precio"))*c.getCantidad());               
+           }
+           stmt2.executeUpdate();
+           
+            
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductoDAOFactory.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+      
+
+    
+        
+        
     }
     
     

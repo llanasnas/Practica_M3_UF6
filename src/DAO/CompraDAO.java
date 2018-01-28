@@ -6,6 +6,7 @@
 package DAO;
 
 import Model.Cliente;
+import Model.Compra;
 import Model.Producto;
 import java.sql.Connection;
 
@@ -15,7 +16,7 @@ import java.sql.Connection;
  */
 public interface CompraDAO {  
     
-    public void realizarCompra(Connection con,int id,Cliente c);    
+    public Compra realizarCompra(Connection con,int id,Cliente c);    
     public void cambiarStock(Connection con,int id,int cantitat);
     public double precioProducto(Connection con, int id);
     

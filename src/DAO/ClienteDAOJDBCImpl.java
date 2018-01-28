@@ -42,6 +42,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
                 c.setApellido(rs.getString("apellido"));
                 c.setDireccion(rs.getString("direccion"));
                 c.setCorreo(rs.getString("correo"));
+                c.setSaldo(rs.getDouble("saldo"));
             }
         } catch (SQLException e) {
 
@@ -230,7 +231,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
     }
     
     @Override
-    public void cargarCredito(Connection con, String email){
+    public double cargarCredito(Connection con, String email){
         
         boolean correcto = false;
         String creditCard="";
@@ -263,9 +264,11 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
             preparedStatement.setString(2, email);
             preparedStatement.executeUpdate();
             System.out.println("¡Cantidad cargada correctamente!");
+            return dinero;
         } catch (SQLException e) {
             System.out.println(e);
         }
+        return 0;
     }
 
     public void cambiarContrasenya(Connection con, String email) {

@@ -14,6 +14,7 @@ import DAO.FacturaDAOFactory;
 import DAO.ProductoDAO;
 import DAO.ProductoDAOFactory;
 import Model.Cliente;
+import Model.Compra;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -146,7 +147,7 @@ public class Test {
                         break;
 
                     case 3:
-                        daoCliente.cargarCredito(con, c.getCorreo());
+                        c.setSaldo(c.getSaldo()+daoCliente.cargarCredito(con, c.getCorreo()));
                         break;
 
                     case 4:
@@ -236,7 +237,12 @@ public class Test {
                         System.out.println("Introduce el id del producto:");
                         int aux = read.nextInt();
                         if(daoProducto.existeProducto(con,aux)){
-                            daoCompra.realizarCompra(con, aux, c);
+                            Compra compra = daoCompra.realizarCompra(con, aux, c);
+                            if(compra!=null){
+                                facturaDAO.facturar(con, compra);
+                            }else{
+                                System.out.println("null");
+                            }                            
                         }else{
                             System.out.println("No existe el producto con ese id");
                         }
