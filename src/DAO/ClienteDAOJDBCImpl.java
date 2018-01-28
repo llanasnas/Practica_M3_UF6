@@ -257,7 +257,7 @@ public class ClienteDAOJDBCImpl implements ClienteDAO {
             }
         }
         
-        String update = "UPDATE cliente SET saldo = ? WHERE correo = ?;";
+        String update = "UPDATE cliente SET saldo = saldo + ? WHERE correo = ?;";
         try (PreparedStatement preparedStatement = con.prepareStatement(update);) {
 
             preparedStatement.setInt(1, dinero);

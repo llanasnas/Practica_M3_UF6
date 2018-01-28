@@ -134,7 +134,7 @@ public class ProductoDAOJDBCImpl implements ProductoDAO {
 
     public boolean existeProducto(Connection con,int aux) {
 
-        String query = "SELECT id FROM producto WHERE id=?";
+        String query = "SELECT id FROM producto WHERE id=? AND stock > 0";
         ResultSet rs = null;        
         int id;
         try (               
